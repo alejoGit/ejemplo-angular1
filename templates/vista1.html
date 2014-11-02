@@ -1,0 +1,16 @@
+<div class="bloque1">
+	<img src="https://angularjs.org/img/AngularJS-large.png" alt="" class="angular">
+	<h1>VISTA 1</h1>
+	{{mensaje}}
+	<ul class="ulCategorias">
+		<li ng-repeat="cat in arrCategorias">
+			
+			<a href="#vista2/{{cat.id}}">
+				{{cat.nombre}}
+				<img ng-src="http://guiagastronomica.co/assets/imagenes/categorias/{{cat.nombre_imagen}}" class="img2" alt="">
+			</a>
+
+		</li>
+	</ul>
+</div>
+

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es" ng-app="datosExternos">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<title>Document</title>
+	<!--
+	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+	<script src="jss/main.js"></script>
+	-->
+	<link rel="stylesheet" href="css/normalize.css">
+	<link rel="stylesheet" href="css/main.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0/angular-animate.js"></script>
+
+	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+	<script src="https://code.angularjs.org/1.2.26/angular-route.min.js"></script>
+	
+	<style>
+		/*.sample-show-hide {
+			  padding:10px;
+			  border:1px solid black;
+			  background:white;
+			}
+
+			.sample-show-hide {
+			  -webkit-transition:all linear 0.5s;
+			  transition:all linear 0.5s;
+			}
+
+			.sample-show-hide.ng-hide {
+			  opacity:0;
+			}*/
+			.main-animation.ng-enter {
+
+			    -webkit-transition: all 400ms;
+			    -moz-transition: all 400ms;
+			    -ms-transition: all 400ms;
+			    -o-transition: all 400ms;
+			    transition: all 400ms;
+			    position: relative;
+			    opacity: 0;
+			    left: 10%;
+				top:0%;
+			   
+			}
+			.main-animation.ng-enter.ng-enter-active {
+			    left: 0;
+			    opacity: 1;
+			    box-shadow: none;
+			    top:0;
+			}
+
+			.slide {
+			    position: absolute;
+			    left: 0;
+			    top: 0;
+			    width: 100%;
+			    height: 100%;
+			    
+			}
+			.slide.ng-enter,
+			.slide.ng-leave {
+			    -webkit-transition: all 0.4s ease-in-out;
+			    -moz-transition: all 0.4s ease-in-out;
+			    -o-transition: all 0.4s ease-in-out;
+			    transition: all 0.4s ease-in-out;
+			}
+			.slide.ng-enter {
+			    left: 100%;
+			}
+			.slide.ng-enter-active {
+			    left: 0;
+			}
+			.slide.ng-leave {
+			    left: 0;
+			}
+			.slide.ng-leave-active {
+			    left: -100%;
+			    
+			}
+
+
+	</style>
+</head>
+<body>
+	<!-- Incluir contenido html desde un documento externo 
+	(MODULARIZACION DE COMPONENTES DE LA PAGINA)
+	<div ng-include src="'templates/plantilla.html'"></div>
+	-->
+
+	<!--<div class="menu-superior">
+		<ul class="ul-menu">
+			<li>
+				<a href="#/"></a>
+			</li>
+			<li>
+				<a href="#/vista1"></a>
+			</li>
+			<li>
+				<a href="#/vista2/1"></a>
+			</li>
+			<li>
+				<a href="#/vista2/2"></a>
+			</li>
+			<li></li>
+
+		</ul>
+	</div>-->
+	
+	<div ng-view class="slide"></div>
+
+	
+
+  	
+	<script>
+
+		var app = angular.module('datosExternos', ['ngRoute','ngAnimate'] );
+
+		app.config(['$routeProvider', function($routeProvider){
+			$routeProvider.when('/vista1',{
+				templateUrl: 'templates/vista1.html',
+				controller: 'controlador1'
+			}).
+			when('/vista2/:parametro',{
+				templateUrl: 'templates/vista2.html',
+				controller: 'controlador2'
+			}).
+			otherwise({
+				redirectTo:'/',
+				templateUrl: 'templates/vista1.html',
+				controller: 'controlador1'
+			});
+		}]);
+		//CONTROLADOR1 (vista1)
+		app.controller('controlador1', ['$scope',function($scope){
+			$scope.mensaje = "Listado de categorías";
+			$scope.main = function(){
+
+		    	$.ajax({
+	               type: 'GET',
+	                url: "http://guiagastronomica.co/app/categorias/",
+	                async: false,
+	                jsonpCallback: 'jsonCallback',
+	                contentType: "application/json",
+	                dataType: 'jsonp',
+	                success: function(response) {  
+	                	console.log("ok ajax");
+	                    var arrayCategorias = $.parseJSON(response.categorias);  
+	                    $scope.arrCategorias = arrayCategorias;
+	                    //Refresca la vista
+	                    $scope.$apply();
+	                },
+	                error: function(e) { 
+	                  
+
+	                }
+	            });
+
+
+		    };
+		    $scope.main();
+		}]);
+		//CONTROLADOR 2 (vista2)
+		app.controller('controlador2', ['$scope','$routeParams',function($scope,$routeParams){
+			$scope.model = {
+		        message:  $routeParams.parametro
+		    };
+
+		    $scope.main = function(){
+
+		    	$.ajax({
+	               type: 'GET',
+	                url: "http://guiagastronomica.co/app/categoria/"+$routeParams.parametro,
+	                async: false,
+	                jsonpCallback: 'jsonCallback',
+	                contentType: "application/json",
+	                dataType: 'jsonp',
+	                success: function(response) {  
+	                    var cat = $.parseJSON(response.categoria);  
+	                    //$scope.arrCategorias = arrayCategorias;
+	                    $scope.categoria = cat;
+	                    //Refresca la vista
+	                    $scope.$apply();
+	                },
+	                error: function(e) { 
+	                  
+
+	                }
+	            });
+
+
+		    };
+		    $scope.main();
+		    
+		   
+
+		}]);
+
+	</script>
+
+</body>
+</html>
